@@ -20,7 +20,6 @@ class Node:
         self.neighbors = []
         self.data = None
 
-
     def draw(self, canvas):
         pygame.draw.rect(canvas, self.c, pygame.Rect(self.x, self.y, self.w, self.h))
 
