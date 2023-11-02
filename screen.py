@@ -13,14 +13,26 @@ class Screen:
     defaultCaption = "Default Program"
     defaultScreenWidth = floor(pygame.display.Info().current_w/2)
     defaultScreenHeight = floor(pygame.display.Info().current_h/2)
+    defaultGridStatus = True
+    defaultGridSize = 20 # px
+    defaultFpsStatus = True
+    defaultFpsSize = 12 # px
 
-    def __init__(self, captionInput = defaultCaption, screenWidthInput = defaultScreenWidth, screenHeightInput = defaultScreenHeight.current_h/2):
+    def __init__(self, captionInput = defaultCaption, screenWidthInput = defaultScreenWidth, screenHeightInput = defaultScreenHeight):
         # Defines the pygame canvas
-        self.canvas = pygame.display.set_mode((screenWidthInput, screenHeightInput)) 
+        self.screenWidth = screenWidthInput
+        self.screenHeight = screenHeightInput
+        self.canvas = pygame.display.set_mode((self.screenWidth, self.screenHeight)) 
         # Stores all of the programs visual functions in order of layers
         self.drawMethods = []
         # Draws the caption in the top bar
         self.captionText = captionInput
+        # Draws the grid
+        self.gridStatus = self.defaultGridStatus
+        self.gridSize = self.defaultGridSize
+        # Draws the fps counter
+        self.fpsStatus = self.defaultFpsStatus
+        self.fpsSize = self.defaultFpsSize
 
     # Adds a draw function to the draw array, takes an input of an object
     def addDraw(self, objectToDraw, preferredLayer):
@@ -47,51 +59,47 @@ class Screen:
                 j -= 1
             i += 1
         return array
-
-    # Primary screen update
-    def draw(self):
-        for x in range(0, len(self.drawMethods)):
-            self.drawMethods[x].obj.draw(self.canvas)
-        pygame.display.update()
-
+    
     # Optional toggles
     def toggleGrid(self):
-        if(self.grid == True):
-            self.grid = False
-        else:
-            self.grid = True
+        self.gridStatus = True if not self.gridStatus else False
 
     def toggleFPS(self):
-        if(self.fps == True):
-            self.fps = False
-        else:
-            self.fps = True
+        self.fpsStatus = True if not self.fpsStatus else False
+
+    # Draws the grid
+    def drawGrid(self):
+        if(self.gridStatus):
+            for x in range(0, self.screenWidth, self.gridSize):
+                pygame.draw.line(self.canvas, (100, 100, 100), (x, 0), (x, self.screenHeight))
+            for y in range(0, self.screenHeight, self.gridSize):
+                pygame.draw.line(self.canvas, (100, 100, 100), (0, y), (self.screenWidth, y))
+    # Draws the fps counter
+    def drawFps(self):
+        if(self.fpsStatus):
+            self.fps = pygame.font.SysFont("Arial", self.fpsSize).render(str(int(pygame.time.get_ticks()/1000)), True, "yellow")
+            self.canvas.blit(self.fps, (self.screenWidth-self.fpsSize, 0))
+
+
 
     # Stores the object and their layer
     class Node:
-        def __init__(self, objectToDraw, preferredLayer, visible = True):
+        def __init__(self, objectToDraw, preferredLayer = 1, visible = True):
             self.obj = objectToDraw
             self.layer = preferredLayer
             self.visible = visible
         # overload < operator
         def __lt__(self, other):
             return self.layer < other.layer
-    # Stores the grid properties
-    class Grid:
-        def __init__(self, gridSize = 20, color = "light grey"):
-            self.gridSize = gridSize
-            self.color = color
-        def draw(self, canvas):
-            for x in range(0, canvas.get_width(), self.gridSize):
-                pygame.draw.line(canvas, self.color, (x, 0), (x, canvas.get_height()))
-            for y in range(0, canvas.get_height(), self.gridSize):
-                pygame.draw.line(canvas, self.color, (0, y), (canvas.get_width(), y))
-    # Stores the FPS properties
-    class FPS:
-        def __init__(self, color = "yellow"):
-            self.color = color
-        def draw(self, canvas):
-            self.font = pygame.font.SysFont("Arial", 12)
-            self.text = self.font.render(str(int(pygame.time.Clock().get_fps())), True, self.color)
-            canvas.blit(self.text, (0, 0))
+        
 
+
+    # Primary screen update
+    def draw(self):
+        self.canvas.fill((0, 0, 0)) 
+        self.drawGrid()
+        self.drawFps()
+        for x in range(0, len(self.drawMethods)):
+            if(self.drawMethods[x].visible):
+                self.drawMethods[x].obj.draw(self.canvas)
+        pygame.display.update()
