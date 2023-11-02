@@ -23,14 +23,16 @@ class Screen:
         self.screenWidth = screenWidthInput
         self.screenHeight = screenHeightInput
         self.canvas = pygame.display.set_mode((self.screenWidth, self.screenHeight)) 
+        
         # Stores all of the programs visual functions in order of layers
         self.drawMethods = []
-        # Draws the caption in the top bar
+        
+        # Initialize caption
         self.captionText = captionInput
-        # Draws the grid
+        self.updateCaption(self.captionText)
+
         self.gridStatus = self.defaultGridStatus
         self.gridSize = self.defaultGridSize
-        # Draws the fps counter
         self.fpsStatus = self.defaultFpsStatus
         self.fpsSize = self.defaultFpsSize
 
@@ -80,8 +82,6 @@ class Screen:
             self.fps = pygame.font.SysFont("Arial", self.fpsSize).render(str(int(pygame.time.get_ticks()/1000)), True, "yellow")
             self.canvas.blit(self.fps, (self.screenWidth-self.fpsSize, 0))
 
-
-
     # Stores the object and their layer
     class Node:
         def __init__(self, objectToDraw, preferredLayer = 1, visible = True):
@@ -92,8 +92,6 @@ class Screen:
         def __lt__(self, other):
             return self.layer < other.layer
         
-
-
     # Primary screen update
     def draw(self):
         self.canvas.fill("white") 
