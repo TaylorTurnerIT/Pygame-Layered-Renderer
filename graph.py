@@ -26,17 +26,25 @@ class Node:
 
 
 # GAME VARIABLES
-testRect = Node(0, 0, 100, 100, (0, 155, 0))
-testRect2 = Node(50, 50, 100, 100, (0, 0, 155))
+testRect = Node(0, 0, 100, 100, (0, 155, 0)) # Green rectangle
+testRect2 = Node(50, 50, 100, 100, (0, 0, 155)) # Blue rectangle
 
-screen.addDraw(testRect, 1)
-screen.addDraw(testRect2, 0)
+screen.addDraw(testRect, 5)
+screen.addDraw(testRect2, 2)
 
 # GAME LOOP
 while not exit: 
     for event in pygame.event.get(): 
         if event.type == pygame.QUIT: 
             exit = True
+        # Key press events
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                exit = True
+            if event.key == pygame.K_g:
+                screen.toggleGrid()
+            if event.key == pygame.K_f:
+                screen.toggleFPS()
     screen.draw()
 
 # QUIT
