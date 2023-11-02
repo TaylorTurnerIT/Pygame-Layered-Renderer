@@ -71,9 +71,9 @@ class Screen:
     def drawGrid(self):
         if(self.gridStatus):
             for x in range(0, self.screenWidth, self.gridSize):
-                pygame.draw.line(self.canvas, (100, 100, 100), (x, 0), (x, self.screenHeight))
+                pygame.draw.line(self.canvas, "light gray", (x, 0), (x, self.screenHeight))
             for y in range(0, self.screenHeight, self.gridSize):
-                pygame.draw.line(self.canvas, (100, 100, 100), (0, y), (self.screenWidth, y))
+                pygame.draw.line(self.canvas, "light gray", (0, y), (self.screenWidth, y))
     # Draws the fps counter
     def drawFps(self):
         if(self.fpsStatus):
@@ -96,7 +96,7 @@ class Screen:
 
     # Primary screen update
     def draw(self):
-        self.canvas.fill((0, 0, 0)) 
+        self.canvas.fill("white") 
         self.drawGrid()
         self.drawFps()
         for x in range(0, len(self.drawMethods)):
